@@ -41,6 +41,8 @@ GameObject:
   - component: {fileID: 1351408226849360760}
   - component: {fileID: 1351408226849360761}
   - component: {fileID: 1351408226849360766}
+  - component: {fileID: -4045931773228478116}
+  - component: {fileID: -3599809313059667473}
   m_Layer: 0
   m_Name: enemyNinja
   m_TagString: Untagged
@@ -75,14 +77,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a33635f503e3db9488d97ca0e536246e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runAwaySpeed: 5
-  moveDistance: 3
-  restTime: 2
+  moveSpeed: 70
+  shootInterval: 0.1
+  moveDelay: 0.2
   projectilePrefab: {fileID: 3013070099117401854, guid: a8d6e9ff5efc6fe4ba9c4c460b7e0281, type: 3}
   firePoint: {fileID: 1351408226628087171}
   projectileSpeed: 15
-  mapMinBounds: {x: -5, y: -5}
-  mapMaxBounds: {x: 5, y: 5}
 --- !u!212 &1351408226849360766
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -134,3 +134,40 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!50 &-4045931773228478116
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1351408226849360767}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
+--- !u!70 &-3599809313059667473
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1351408226849360767}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 1, y: 2}
+  m_Direction: 0

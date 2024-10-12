@@ -9,8 +9,17 @@ EditorBuildSettings:
     path: Assets/00_Scenes/MainMenu.unity
     guid: f4cfc8302dff33141929a5620b38598e
   - enabled: 1
+    path: Assets/00_Scenes/Lobby.unity
+    guid: 1ae907b0858932a4fab9c0a51b97dc2b
+  - enabled: 1
     path: Assets/00_Scenes/ChessMap.unity
     guid: a54e72b818bbde34f88df8104635ef82
+  - enabled: 1
+    path: Assets/00_Scenes/JapaneseMap.unity
+    guid: b840fa96fd1fbe14cbeac2ea317ed013
+  - enabled: 1
+    path: Assets/00_Scenes/LaberynthMap.unity
+    guid: 4ed01409a498d88488fe8681e46c5c6f
   - enabled: 1
     path: Assets/00_Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729

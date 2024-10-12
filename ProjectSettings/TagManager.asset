@@ -5,11 +5,17 @@ TagManager:
   serializedVersion: 2
   tags:
   - Wall
+  - Obstacule
+  - Obstacule1
+  - Obstacule2
+  - Obstacule3
+  - Obstacule4
+  - Obstacule5
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - ObstaculeLayer
   - Water
   - UI
   - 
