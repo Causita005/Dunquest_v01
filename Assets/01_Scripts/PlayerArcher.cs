@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMove : MonoBehaviour
+public class PlayerArcher : MonoBehaviour
 {
     [SerializeField] private float speed = 3f;
     [SerializeField] private Rigidbody2D playerRb;
@@ -66,4 +66,5 @@ public class PlayerMove : MonoBehaviour
         }
     }
 }
+
 
