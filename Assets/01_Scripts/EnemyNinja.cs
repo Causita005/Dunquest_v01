@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class EnemyNinja : MonoBehaviour
 {
-    public float moveSpeed = 100f; // Velocidad al moverse entre puntos, más rápida
-    public float shootInterval = 0.1f; // Intervalo entre disparos, más rápido
-    public float moveDelay = 0.2f; // Tiempo que espera antes de moverse al siguiente obstáculo después de disparar, más rápido
+    public float moveSpeed = 20f; // Velocidad al moverse entre puntos
+    public float projectileSpeed = 5f; // Velocidad de los proyectiles
+    public Transform firePointLeft; // Punto de disparo desde el lado izquierdo
+    public Transform firePointRight; // Punto de disparo desde el lado derecho
+    private Transform activeFirePoint; // Punto de disparo activo (izquierda o derecha)
     public GameObject projectilePrefab; // Prefab del proyectil
-    public Transform firePoint; // Punto de disparo desde el centro del enemigo
-    public float projectileSpeed = 100f; // Velocidad de los proyectiles, aún más rápida
+    public EnemySpawner spawner; // Referencia al spawner de enemigos
     private Transform target; // El objetivo (jugador)
     private List<Obstacule> obstacules = new List<Obstacule>(); // Lista de obstáculos
     private int currentObstaculeIndex = 0; // Índice del obstáculo actual en el que está el enemigo
@@ -34,23 +35,21 @@ public class EnemyNinja : MonoBehaviour
 
         // Inicia moviéndose hacia el primer obstáculo
         StartCoroutine(MoveToNextObstacule());
+
+        // Comienza la cuenta regresiva de 5 segundos para la muerte automática del enemigo
+        StartCoroutine(AutoDestroyEnemy());
     }
 
     void Update()
     {
-        // Aseguramos que el firePoint siempre apunte hacia el lado donde está el jugador
-        if (target != null && firePoint != null)
+        // Determina desde qué firePoint disparar basándose en el obstáculo actual
+        if (currentObstaculeIndex == 0 || currentObstaculeIndex == 1) // Obstacule1 y Obstacule2 disparan hacia la derecha
         {
-            // Si el jugador está a la derecha, el firePoint apunta a la derecha
-            if (target.position.x > transform.position.x)
-            {
-                firePoint.rotation = Quaternion.Euler(0f, 0f, 0f); // Apunta a la derecha
-            }
-            // Si el jugador está a la izquierda, el firePoint apunta a la izquierda
-            else if (target.position.x < transform.position.x)
-            {
-                firePoint.rotation = Quaternion.Euler(0f, 0f, 180f); // Apunta a la izquierda
-            }
+            activeFirePoint = firePointRight; // Disparar a la derecha
+        }
+        else if (currentObstaculeIndex >= 2) // Obstacule3, Obstacule4 y Obstacule5 disparan hacia la izquierda
+        {
+            activeFirePoint = firePointLeft; // Disparar a la izquierda
         }
     }
 
@@ -82,13 +81,13 @@ public class EnemyNinja : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             ShootProjectile();
-            yield return new WaitForSeconds(shootInterval); // Espera entre cada disparo
+            yield return new WaitForSeconds(0.1f); // Espera entre cada disparo
         }
 
         isShooting = false;
 
         // Espera un tiempo antes de moverse al siguiente obstáculo
-        yield return new WaitForSeconds(moveDelay);
+        yield return new WaitForSeconds(0.2f);
 
         // Incrementa el índice para ir al siguiente obstáculo
         currentObstaculeIndex = (currentObstaculeIndex + 1) % obstacules.Count;
@@ -97,20 +96,54 @@ public class EnemyNinja : MonoBehaviour
         StartCoroutine(MoveToNextObstacule());
     }
 
-    // Método para disparar proyectiles hacia la dirección del firePoint (dependiendo de la rotación)
+    // Método para disparar proyectiles en la dirección correcta desde el firePoint activo
+    // Método para disparar proyectiles en la dirección correcta desde el firePoint activo
     void ShootProjectile()
     {
-        // Instancia un proyectil y lo dispara en la dirección del firePoint
-        if (projectilePrefab != null && firePoint != null)
+        if (projectilePrefab != null && activeFirePoint != null)
         {
-            GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+            GameObject projectile = Instantiate(projectilePrefab, activeFirePoint.position, activeFirePoint.rotation);
             Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
 
-            // Aplica la velocidad en la dirección del eje X del firePoint (dependiendo de su rotación)
-            rb.velocity = firePoint.right * projectileSpeed;
+            // Ignorar colisiones entre el proyectil y el enemigo
+            Collider2D enemyCollider = GetComponent<Collider2D>();
+            Collider2D projectileCollider = projectile.GetComponent<Collider2D>();
+            Physics2D.IgnoreCollision(projectileCollider, enemyCollider);
+
+            // Si el enemigo está en Obstacule1 o Obstacule2 (disparar a la derecha)
+            if (activeFirePoint == firePointRight)
+            {
+                rb.velocity = activeFirePoint.right * projectileSpeed; // Dispara hacia la derecha
+            }
+            // Si el enemigo está en Obstacule3, Obstacule4 o Obstacule5 (disparar a la izquierda)
+            else if (activeFirePoint == firePointLeft)
+            {
+                rb.velocity = -activeFirePoint.right * projectileSpeed; // Dispara hacia la izquierda
+            }
 
             // Destruye el proyectil si no impacta con nada después de 2 segundos
             Destroy(projectile, 2f);
         }
+    }
+
+
+    // Método para destruir automáticamente al enemigo después de 5 segundos (para probar)
+    IEnumerator AutoDestroyEnemy()
+    {
+        yield return new WaitForSeconds(5f); // Espera 5 segundos
+        Die(); // Llama al método Die() para destruir al enemigo
+    }
+
+    // Método para simular la muerte del enemigo
+    public void Die()
+    {
+        // Notificar al spawner que el enemigo ha muerto
+        if (spawner != null)
+        {
+            spawner.OnEnemyDeath();
+        }
+
+        // Destruir el enemigo
+        Destroy(gameObject);
     }
 }
