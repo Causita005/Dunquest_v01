@@ -82,6 +82,22 @@ public class Boss : MonoBehaviour
 
     IEnumerator JumpToTarget()
     {
+        // Obtén el Collider del objeto (puede ser 2D o 3D, ajusta según el caso)
+        Collider2D collider = GetComponent<Collider2D>(); // Para un Collider 2D
+                                                          // Collider collider = GetComponent<Collider>(); // Para un Collider 3D
+
+        // Desactiva el Collider
+        if (collider != null)
+        {
+            collider.enabled = false;
+        }
+
+        // Desactiva todos los hijos
+        foreach (Transform child in transform)
+        {
+            child.gameObject.SetActive(false);
+        }
+
         // Usa la velocidad aumentada cuando se mueve hacia el jugador
         float jumpSpeed = increasedJumpSpeed;
 
@@ -91,8 +107,21 @@ public class Boss : MonoBehaviour
         // Mueve al boss hacia la posición objetivo rápidamente
         while (Vector2.Distance(transform.position, targetPosition) > 0.1f)
         {
+            // Actualiza la posición del objeto mientras el collider y los hijos están desactivados
             transform.position = Vector2.MoveTowards(transform.position, targetPosition, jumpSpeed * Time.deltaTime);
             yield return null;
+        }
+
+        // Activa el Collider y los hijos cuando llega a la posición objetivo
+        if (collider != null)
+        {
+            collider.enabled = true;
+        }
+
+        // Activa todos los hijos
+        foreach (Transform child in transform)
+        {
+            child.gameObject.SetActive(true);
         }
 
         // Incrementa el contador de saltos
